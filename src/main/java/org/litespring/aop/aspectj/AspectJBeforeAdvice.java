@@ -9,26 +9,15 @@ import java.lang.reflect.Method;
 /**
  * @author Jack
  */
-public class AspectJBeforeAdvice implements Advice {
-
-    protected Method adviceMethod;
-    protected AspectJExpressionPointcut pointcut;
-    protected Object adviceObject;
+public class AspectJBeforeAdvice extends AbstractAspectJAdvice {
 
     public AspectJBeforeAdvice(Method adviceMethod, AspectJExpressionPointcut pointcut, Object adviceObject) {
-        this.adviceMethod = adviceMethod;
-        this.pointcut = pointcut;
-        this.adviceObject = adviceObject;
-    }
-
-    @Override
-    public Pointcut getPointcut() {
-        return pointcut;
+        super(adviceMethod, pointcut, adviceObject);
     }
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        adviceMethod.invoke(adviceObject);
+        this.invokeAdviceMethod();
         return methodInvocation.proceed();
     }
 }

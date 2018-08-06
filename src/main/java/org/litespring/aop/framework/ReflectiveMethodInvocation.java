@@ -65,8 +65,7 @@ public class ReflectiveMethodInvocation implements MethodInvocation {
 
         this.currentInterceptorIndex ++;
 
-        MethodInterceptor interceptor =
-                this.interceptors.get(this.currentInterceptorIndex);
+        MethodInterceptor interceptor = this.interceptors.get(this.currentInterceptorIndex);
 
         return interceptor.invoke(this);
 
