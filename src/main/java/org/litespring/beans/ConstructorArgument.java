@@ -8,15 +8,27 @@ import java.util.List;
  * @author Jack
  */
 public class ConstructorArgument {
-    private final List<ValueHolder> argumentValues = new LinkedList<>();
+
+    private final List<ValueHolder> argumentValues = new LinkedList<ValueHolder>();
+
+    /**
+     * Create a new empty ConstructorArgumentValues object.
+     */
+    public ConstructorArgument() {
+    }
+
+    public void addArgumentValue(Object value) {
+        this.argumentValues.add(new ValueHolder(value));
+    }
 
     public void addArgumentValue(ValueHolder valueHolder) {
-        argumentValues.add(valueHolder);
+        this.argumentValues.add(valueHolder);
     }
 
     public List<ValueHolder> getArgumentValues() {
         return Collections.unmodifiableList(this.argumentValues);
     }
+
 
     public int getArgumentCount() {
         return this.argumentValues.size();
@@ -37,7 +49,7 @@ public class ConstructorArgument {
      * Holder for a constructor argument value, with an optional type
      * attribute indicating the target type of the actual constructor argument.
      */
-    public static class ValueHolder {
+    public static class ValueHolder{
 
         private Object value;
 
@@ -60,28 +72,29 @@ public class ConstructorArgument {
             this.name = name;
         }
 
-        public Object getValue() {
-            return value;
-        }
-
         public void setValue(Object value) {
             this.value = value;
         }
 
-        public String getType() {
-            return type;
+        public Object getValue() {
+            return this.value;
         }
+
 
         public void setType(String type) {
             this.type = type;
         }
 
-        public String getName() {
-            return name;
+        public String getType() {
+            return this.type;
         }
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
         }
     }
 }

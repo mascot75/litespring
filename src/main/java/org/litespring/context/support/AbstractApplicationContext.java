@@ -1,5 +1,6 @@
 package org.litespring.context.support;
 
+import org.litespring.aop.aspectj.AspectJAutoProxyCreator;
 import org.litespring.beans.factory.NoSuchBeanDefinitionException;
 import org.litespring.beans.factory.annotation.AutowireAnnotationProcessor;
 import org.litespring.beans.factory.config.ConfigurableBeanFactory;
@@ -9,6 +10,8 @@ import org.litespring.context.ApplicationContext;
 import org.litespring.core.io.ClassPathResource;
 import org.litespring.core.io.Resource;
 import org.litespring.util.ClassUtils;
+
+import java.util.List;
 
 /**
  * @author mascot
@@ -45,14 +48,23 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     }
 
     protected void registerBeanPostProcessor(ConfigurableBeanFactory beanFactory) {
-        AutowireAnnotationProcessor processor = new AutowireAnnotationProcessor();
-        processor.setBeanFactory(beanFactory);
-        beanFactory.addBeanPostProcessors(processor);
+         AutowireAnnotationProcessor processor = new AutowireAnnotationProcessor();
+         processor.setBeanFactory(beanFactory);
+         beanFactory.addBeanPostProcessors(processor);
+
+         AspectJAutoProxyCreator proxyCreator = new AspectJAutoProxyCreator();
+         proxyCreator.setBeanFactory(beanFactory);
+         beanFactory.addBeanPostProcessors(proxyCreator);
     }
 
     @Override
     public Class<?> getType(String beanName) throws NoSuchBeanDefinitionException {
         return this.factory.getType(beanName);
+    }
+
+    @Override
+    public List<Object> getBeansByType(Class<?> type) {
+        return this.factory.getBeansByType(type);
     }
 
     protected abstract Resource getResourceByPath(String path);

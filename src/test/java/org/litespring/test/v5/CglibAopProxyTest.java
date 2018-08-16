@@ -6,30 +6,38 @@ import org.junit.Test;
 import org.litespring.aop.aspectj.AspectJAfterReturningAdvice;
 import org.litespring.aop.aspectj.AspectJBeforeAdvice;
 import org.litespring.aop.aspectj.AspectJExpressionPointcut;
+import org.litespring.aop.config.AspectInstanceFactory;
 import org.litespring.aop.framework.AopConfig;
 import org.litespring.aop.framework.AopConfigSupport;
 import org.litespring.aop.framework.CglibProxyFactory;
+import org.litespring.beans.factory.BeanFactory;
 import org.litespring.service.v5.PetStoreService;
 import org.litespring.tx.TransactionManager;
 import org.litespring.util.MessageTracker;
 
 import java.util.List;
 
-public class CglibAopProxyTest {
+public class CglibAopProxyTest extends AbstractV5Test {
     private static AspectJBeforeAdvice beforeAdvice = null;
     private static AspectJAfterReturningAdvice afterAdvice = null;
+    private  AspectJExpressionPointcut pc = null;
+    private BeanFactory beanFactory = null;
+    private AspectInstanceFactory aspectInstanceFactory = null;
 
     @Before
     public  void setUp() throws Exception{
-        TransactionManager tx = new TransactionManager();
+        MessageTracker.clearMsgs();
+
         String expression = "execution(* org.litespring.service.v5.*.placeOrder(..))";
-        AspectJExpressionPointcut pc = new AspectJExpressionPointcut();
+        pc = new AspectJExpressionPointcut();
         pc.setExpression(expression);
 
-        beforeAdvice = new AspectJBeforeAdvice(TransactionManager.class.getMethod("start"), pc, tx);
-        afterAdvice = new AspectJAfterReturningAdvice(TransactionManager.class.getMethod("commit"), pc, tx);
+        beanFactory = this.getBeanFactory("petstore_v5.xml");
+        aspectInstanceFactory = this.getAspectInstanceFactory("tx");
+        aspectInstanceFactory.setBeanFactory(beanFactory);
 
-        MessageTracker.clearMsgs();
+        beforeAdvice = new AspectJBeforeAdvice(getAdviceMethod("start"), pc, aspectInstanceFactory);
+        afterAdvice = new AspectJAfterReturningAdvice(getAdviceMethod("commit"), pc, aspectInstanceFactory);
     }
 
     @Test

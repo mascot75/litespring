@@ -34,6 +34,7 @@ public class ReflectiveMethodInvocation implements MethodInvocation {
     }
 
 
+    @Override
     public final Object getThis() {
         return this.targetObject;
     }

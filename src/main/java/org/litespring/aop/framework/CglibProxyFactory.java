@@ -204,7 +204,7 @@ public class CglibProxyFactory implements AopProxyFactory {
 				retVal = methodProxy.invoke(target, args);
 			}
 			else {
-				List<org.aopalliance.intercept.MethodInterceptor> interceptors = new ArrayList<org.aopalliance.intercept.MethodInterceptor>();
+				List<org.aopalliance.intercept.MethodInterceptor> interceptors = new ArrayList<>();
 				
 				interceptors.addAll(chain);
 

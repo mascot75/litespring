@@ -20,6 +20,7 @@ public class AutowireAnnotationProcessorTest {
     ItemDao itemDao = new ItemDao();
 
     DefaultBeanFactory beanFactory = new DefaultBeanFactory(){
+        @Override
         public Object resolveDependency(DependencyDescriptor descriptor) {
             if (descriptor.getDependencyType().equals(AccountDao.class)) {
                 return accountDao;

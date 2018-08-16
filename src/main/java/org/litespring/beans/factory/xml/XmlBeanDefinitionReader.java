@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.litespring.aop.config.ConfigBeanDefinitionParser;
 import org.litespring.beans.BeanDefinition;
 import org.litespring.beans.ConstructorArgument;
 import org.litespring.beans.PropertyValue;
@@ -47,6 +48,8 @@ public class XmlBeanDefinitionReader {
 
     public static final String CONTEXT_NAMESPACE_URI = "http://www.springframework.org/schema/context";
 
+    public static final String AOP_NAMESPACE_URI = "http://www.springframework.org/schema/aop";
+
     private static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
 
     private BeanDefinitionRegistry registry;
@@ -74,11 +77,18 @@ public class XmlBeanDefinitionReader {
                 } else if(this.isContextNamespace(namespaceUri)){
                     this.parseComponentElement(element); 
                     //例如<context:component-scan>
+                } else if (this.isAopNamespace(namespaceUri)) {
+                    this.parseAopElement(element);
                 }
             }
         } catch (Exception e) {
             throw new BeanDefinitionStoreException("IOException parsing XML document from " + resource.getDescription(), e);
         }
+    }
+
+    private void parseAopElement(Element element) {
+        ConfigBeanDefinitionParser parse = new ConfigBeanDefinitionParser();
+        parse.parse(element, this.registry);
     }
 
     private void parseComponentElement(Element element) {
@@ -99,14 +109,16 @@ public class XmlBeanDefinitionReader {
         this.registry.registerBeanDefinition(id, beanDefinition);
     }
 
-    public boolean isDefaultNamespace(String namespaceUri) {
+    private boolean isDefaultNamespace(String namespaceUri) {
         return (!StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri));
     }
-    public boolean isContextNamespace(String namespaceUri){
+    private boolean isContextNamespace(String namespaceUri){
         return (!StringUtils.hasLength(namespaceUri) || CONTEXT_NAMESPACE_URI.equals(namespaceUri));
     }
 
-
+    private boolean isAopNamespace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || AOP_NAMESPACE_URI.equals(namespaceUri));
+    }
     private void parseConstructorArgElements(Element element, BeanDefinition beanDefinition) {
         Iterator iterator = element.elementIterator(CONSTRUCTOR_ARG_ELEMENT);
         while (iterator.hasNext()) {
@@ -118,7 +130,7 @@ public class XmlBeanDefinitionReader {
     private void parseConstructorArgElement(Element element, BeanDefinition beanDefinition) {
         String typeAttr = element.attributeValue(TYPE_ATTRIBUTE);
         String nameAttr = element.attributeValue(NAME_ATTRIBUTE);
-        Object value = this.parsePropertyValue(element, beanDefinition, null);
+        java.lang.Object value = this.parsePropertyValue(element, beanDefinition, null);
         ConstructorArgument.ValueHolder valueHolder = new ConstructorArgument.ValueHolder(value);
 
         if (StringUtils.hasLength(typeAttr)) {
@@ -141,13 +153,13 @@ public class XmlBeanDefinitionReader {
                 return;
             }
 
-            Object value = parsePropertyValue(element, beanDefinition, propertyName);
+            java.lang.Object value = parsePropertyValue(element, beanDefinition, propertyName);
             PropertyValue propertyValue = new PropertyValue(propertyName,value);
             beanDefinition.getPropertyValues().add(propertyValue);
         }
     }
 
-    public Object parsePropertyValue(Element element, BeanDefinition beanDefinition, String propertyName) {
+    public java.lang.Object parsePropertyValue(Element element, BeanDefinition beanDefinition, String propertyName) {
         String elementName = (propertyName != null) ?
                 "<property> element for property '" + propertyName + "'" :
                 "<constructor-arg> element";
