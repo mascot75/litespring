@@ -1,7 +1,7 @@
 package org.litespring.beans;
 
 /**
- * @author mascot
+ * @author Javk
  */
 public class BeansException extends RuntimeException {
 	public BeansException(String msg) {

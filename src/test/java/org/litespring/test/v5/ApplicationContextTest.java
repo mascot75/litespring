@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
 public class ApplicationContextTest {
     @Test
     public void testPlaceOrder() {
+        MessageTracker.clearMsgs();
+
         ApplicationContext context = new ClassPathXmlApplicationContext("petstore_v5.xml");
         PetStoreService petStore = (PetStoreService) context.getBean("petStore");
 
