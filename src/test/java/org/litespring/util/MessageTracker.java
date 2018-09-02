@@ -9,6 +9,7 @@ public class MessageTracker {
 	
 	public static void addMsg(String msg){
 		MESSAGES.add(msg);
+		System.out.println(msg);
 	}
 	public static void clearMsgs(){
 		MESSAGES.clear();

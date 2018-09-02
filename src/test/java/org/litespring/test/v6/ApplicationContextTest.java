@@ -1,5 +1,7 @@
 package org.litespring.test.v6;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,21 +10,17 @@ import org.litespring.context.support.ClassPathXmlApplicationContext;
 import org.litespring.service.v6.IPetStoreService;
 import org.litespring.util.MessageTracker;
 
-import java.util.List;
-
 public class ApplicationContextTest {
 
-    @Before
-    public void setUp(){
-        MessageTracker.clearMsgs();
-    }
+
 
     @Test
     public void testGetBeanProperty() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("petstore_v6.xml");
-        IPetStoreService petStoreService = (IPetStoreService) context.getBean("petStore");
 
-        petStoreService.placeOrder();
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("petstore-v6.xml");
+        IPetStoreService petStore = (IPetStoreService)ctx.getBean("petStore");
+
+        petStore.placeOrder();
 
         List<String> msgs = MessageTracker.getMsgs();
 
@@ -32,4 +30,11 @@ public class ApplicationContextTest {
         Assert.assertEquals("commit tx", msgs.get(2));
 
     }
+
+    @Before
+    public void setUp(){
+        MessageTracker.clearMsgs();
+    }
+
+
 }
